@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✨ Cute To-Do ✨</title>
+    <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect width="16" height="16" fill="%23ffeef7"/><g><rect x="3" y="2" width="2" height="2" fill="%23333"/><rect x="11" y="2" width="2" height="2" fill="%23333"/><rect x="4" y="4" width="8" height="6" fill="%23ff9dbb"/><rect x="5" y="5" width="1" height="1" fill="%23333"/><rect x="10" y="5" width="1" height="1" fill="%23333"/><rect x="7" y="7" width="2" height="1" fill="%23333"/><rect x="6" y="9" width="4" height="1" fill="%23ffc1d4"/><rect x="3" y="8" width="1" height="2" fill="%23ff9dbb"/><rect x="12" y="8" width="1" height="2" fill="%23ff9dbb"/><rect x="4" y="10" width="8" height="2" fill="%23ffa9c6"/></g></svg>'/>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         /* Reset and base styles */
@@ -87,6 +88,41 @@
             color: #333;
             text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
             animation: bounce 2s ease-in-out infinite;
+        }
+
+        /* Audio controls */
+        .audio-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .audio-btn {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 8px;
+            padding: 8px 10px;
+            border: 2px solid #333;
+            background: linear-gradient(145deg, #ffd93d, #ffb347);
+            box-shadow: 0 3px 0 #666;
+            cursor: pointer;
+        }
+        .audio-btn:active { transform: translateY(1px); box-shadow: 0 1px 0 #666; }
+        .audio-slider {
+            -webkit-appearance: none;
+            width: 120px;
+            height: 10px;
+            background: #fff;
+            border: 2px solid #333;
+            box-shadow: inset 2px 2px 0 #ccc;
+        }
+        .audio-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #ff9a9e;
+            border: 2px solid #333;
         }
 
         @keyframes bounce {
@@ -414,6 +450,15 @@
             }
         }
 
+        /* Wobble on complete */
+        .task-item.completed { animation: wobble .4s ease; }
+        @keyframes wobble {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-1deg); }
+            50% { transform: rotate(1deg); }
+            100% { transform: rotate(0deg); }
+        }
+
         /* Floating hearts animation */
         .floating-hearts {
             position: fixed;
@@ -431,6 +476,51 @@
             font-size: 20px;
             animation: float 3s ease-in-out infinite;
             opacity: 0;
+        }
+        
+        /* Pixel mascots */
+        .mascot-strip {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 900;
+            pointer-events: none;
+        }
+
+        .mascot {
+            width: 40px;
+            height: 40px;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 2px 0 #666) drop-shadow(0 0 6px rgba(255,255,255,0.6));
+            animation: bob 2.5s ease-in-out infinite;
+        }
+
+        .mascot:nth-child(2) { animation-delay: .2s; }
+        .mascot:nth-child(3) { animation-delay: .4s; }
+        .mascot:nth-child(4) { animation-delay: .6s; }
+
+        @keyframes bob {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -6px); }
+        }
+
+        /* Sticker floaters */
+        .sticker {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            image-rendering: pixelated;
+            opacity: .75;
+            animation: drift 8s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes drift {
+            from { transform: translateY(0) rotate(0deg); }
+            to { transform: translateY(-120px) rotate(15deg); }
         }
 
         @keyframes float {
@@ -453,11 +543,57 @@
 </head>
 <body>
     <div class="floating-hearts" id="floatingHearts"></div>
+    <div class="mascot-strip" aria-hidden="true">
+        <!-- 4 cute pixel mascots as inline SVGs so they work offline -->
+        <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <!-- pink cat -->
+            <rect width="16" height="16" fill="#ffeef7"/>
+            <rect x="3" y="3" width="10" height="8" fill="#ff9dbb"/>
+            <rect x="2" y="4" width="2" height="2" fill="#ff9dbb"/>
+            <rect x="12" y="4" width="2" height="2" fill="#ff9dbb"/>
+            <rect x="5" y="6" width="2" height="2" fill="#333"/>
+            <rect x="9" y="6" width="2" height="2" fill="#333"/>
+            <rect x="6" y="8" width="4" height="1" fill="#333"/>
+        </svg>
+        <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <!-- mint bunny -->
+            <rect width="16" height="16" fill="#effbf6"/>
+            <rect x="3" y="5" width="10" height="6" fill="#a8e6cf"/>
+            <rect x="4" y="1" width="2" height="4" fill="#a8e6cf"/>
+            <rect x="10" y="1" width="2" height="4" fill="#a8e6cf"/>
+            <rect x="5" y="6" width="2" height="2" fill="#333"/>
+            <rect x="9" y="6" width="2" height="2" fill="#333"/>
+            <rect x="6" y="8" width="4" height="1" fill="#333"/>
+        </svg>
+        <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <!-- lemon chick -->
+            <rect width="16" height="16" fill="#fffbea"/>
+            <rect x="3" y="4" width="10" height="7" fill="#ffd93d"/>
+            <rect x="5" y="6" width="2" height="2" fill="#333"/>
+            <rect x="9" y="6" width="2" height="2" fill="#333"/>
+            <rect x="6" y="8" width="4" height="1" fill="#333"/>
+            <rect x="7" y="11" width="2" height="1" fill="#ff9a3d"/>
+        </svg>
+        <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <!-- lavender bear -->
+            <rect width="16" height="16" fill="#f5f0ff"/>
+            <rect x="3" y="4" width="10" height="8" fill="#c7ceea"/>
+            <rect x="2" y="3" width="3" height="3" fill="#c7ceea"/>
+            <rect x="11" y="3" width="3" height="3" fill="#c7ceea"/>
+            <rect x="5" y="6" width="2" height="2" fill="#333"/>
+            <rect x="9" y="6" width="2" height="2" fill="#333"/>
+            <rect x="6" y="8" width="4" height="1" fill="#333"/>
+        </svg>
+    </div>
     
     <div class="container">
         <!-- Retro window header -->
         <div class="window-header">
             <h1 class="title">✨ Cute To-Do ✨</h1>
+            <div class="audio-controls">
+                <button class="audio-btn" id="audioToggle" title="Play/Pause Music">🔈</button>
+                <input type="range" id="audioVolume" class="audio-slider" min="0" max="1" step="0.01" value="0.4"/>
+            </div>
         </div>
 
         <!-- Main to-do interface -->
@@ -488,6 +624,9 @@
             constructor() {
                 this.tasks = this.loadTasks();
                 this.taskIdCounter = this.getNextId();
+                this.masterVolume = 0.4;
+                this.sfx = this.loadSounds();
+                this.bgm = this.createBgm();
                 this.initializeEventListeners();
                 this.renderTasks();
             }
@@ -514,6 +653,8 @@
                 const taskInput = document.getElementById('taskInput');
                 const addBtn = document.getElementById('addBtn');
                 const clearBtn = document.getElementById('clearBtn');
+                const audioToggle = document.getElementById('audioToggle');
+                const audioVolume = document.getElementById('audioVolume');
 
                 // Add task on button click
                 addBtn.addEventListener('click', () => this.addTask());
@@ -530,6 +671,68 @@
 
                 // Add some cute floating hearts on page load
                 this.createFloatingHearts();
+                this.spawnStickers();
+
+                // Audio UI wiring
+                if (audioVolume) {
+                    this.masterVolume = parseFloat(audioVolume.value);
+                    audioVolume.addEventListener('input', () => {
+                        this.masterVolume = parseFloat(audioVolume.value);
+                        this.applyVolumes();
+                    });
+                }
+                if (audioToggle) {
+                    audioToggle.addEventListener('click', () => {
+                        // user gesture: safe to start music
+                        if (this.bgm.paused) {
+                            this.bgm.play().then(() => {
+                                audioToggle.textContent = '🔊';
+                            }).catch(() => {});
+                        } else {
+                            this.bgm.pause();
+                            audioToggle.textContent = '🔈';
+                        }
+                    });
+                }
+            }
+
+            // Load tiny inline sound effects
+            loadSounds() {
+                const mk = (src) => {
+                    const a = new Audio(src);
+                    a.preload = 'auto';
+                    return a;
+                };
+                // Beeps generated as short WAVs (data URIs) for offline use
+                const add = mk('data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAAAClAAAAAAAAPwAAAP8AAAD/AP//AAD//wAAAP8AAAD/AAAA/wAAAP//AAD//wAAAP8AAAD/AAAA/wAAAP//AAD//wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA');
+                const del = mk('data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAAAClAAAAAAAAPwAAAP8AAAD/AP//AAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA');
+                const boom = mk('data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAAAClAAAAAAAAPwAAAP8AAAD/AP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAP8AAAA');
+                return { add, del, boom };
+            }
+
+            // Create background music (tiny loop, starts on button press)
+            createBgm() {
+                const bgm = new Audio('data:audio/ogg;base64,T2dnUwACAAAAAAAAAABxd5m3AAAAAABWb3JiaXMAAAAAAUSsAAAAAAAAAAAAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+                bgm.loop = true;
+                bgm.preload = 'auto';
+                bgm.volume = this.masterVolume * 0.6;
+                return bgm;
+            }
+
+            // Apply master volume to all audio
+            applyVolumes() {
+                if (this.bgm) this.bgm.volume = this.masterVolume * 0.6;
+                // sfx volumes are applied per play to ensure snappy changes
+            }
+
+            playSfx(name, base = 1) {
+                const snd = this.sfx?.[name];
+                if (!snd) return;
+                try {
+                    snd.currentTime = 0;
+                    snd.volume = Math.max(0, Math.min(1, this.masterVolume * base));
+                    snd.play().catch(() => {});
+                } catch (e) {}
             }
 
             // Add a new task
@@ -562,6 +765,8 @@
                 // Create floating hearts animation
                 this.createFloatingHearts();
                 this.showNotification('Task added! ✨', 'success');
+                this.celebrate();
+                this.playSfx('add', 0.9);
             }
 
             // Toggle task completion
@@ -603,6 +808,8 @@
                             this.saveTasks();
                             this.renderTasks();
                             this.showNotification('Task deleted! ✨', 'info');
+                            this.poof(taskElement);
+                            this.playSfx('del', 0.8);
                         }, 300);
                     }
                 }
@@ -620,6 +827,8 @@
                     this.saveTasks();
                     this.renderTasks();
                     this.showNotification('All tasks cleared! ✨', 'info');
+                    this.bigPoof();
+                    this.playSfx('boom', 1.0);
                 }
             }
 
@@ -652,6 +861,84 @@
                         </div>
                     </li>
                 `).join('');
+            }
+
+            // Sprinkle floating pixel stickers (inline pixel art as data URIs)
+            spawnStickers() {
+                const stickerPool = [
+                    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="none"/><rect x="5" y="5" width="6" height="6" fill="%23ff9dbb"/><rect x="6" y="6" width="1" height="1" fill="%23fff"/><rect x="9" y="6" width="1" height="1" fill="%23fff"/><rect x="7" y="8" width="2" height="1" fill="%23333"/></svg>',
+                    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="none"/><rect x="4" y="6" width="8" height="5" fill="%23ffd93d"/><rect x="5" y="5" width="2" height="2" fill="%23ffd93d"/><rect x="9" y="5" width="2" height="2" fill="%23ffd93d"/></svg>',
+                    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="none"/><rect x="5" y="4" width="6" height="7" fill="%23c7ceea"/></svg>'
+                ];
+
+                const container = document.body;
+                for (let i = 0; i < 8; i++) {
+                    const img = document.createElement('img');
+                    img.className = 'sticker';
+                    img.src = stickerPool[i % stickerPool.length];
+                    img.style.left = Math.random() * 100 + 'vw';
+                    img.style.bottom = (Math.random() * 40 + 10) + 'px';
+                    img.style.animationDelay = (Math.random() * 6) + 's';
+                    img.style.opacity = (0.5 + Math.random() * 0.5).toFixed(2);
+                    container.appendChild(img);
+                }
+            }
+
+            // Tiny confetti celebration
+            celebrate() {
+                for (let i = 0; i < 12; i++) {
+                    setTimeout(() => {
+                        const dot = document.createElement('div');
+                        const size = 6 + Math.random() * 6;
+                        dot.style.cssText = `position: fixed; left: 50%; top: 90px; width: ${size}px; height: ${size}px; border-radius: 2px; background: ${['#ff9dbb','#ffd93d','#a8e6cf','#c7ceea'][i%4]}; transform: translateX(${(Math.random()-0.5)*150}px); opacity: 0; z-index: 9999; animation: confettiFall .8s ease-out forwards;`;
+                        if (!document.getElementById('confetti-styles')) {
+                            const style = document.createElement('style');
+                            style.id = 'confetti-styles';
+                            style.textContent = `@keyframes confettiFall { 0% { transform: translateY(-10px) scale(.8); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(50px) scale(1); opacity: 0; } }`;
+                            document.head.appendChild(style);
+                        }
+                        document.body.appendChild(dot);
+                        setTimeout(() => dot.remove(), 800);
+                    }, i * 30);
+                }
+            }
+
+            // Small poof on delete
+            poof(el) {
+                const rect = el.getBoundingClientRect();
+                for (let i = 0; i < 8; i++) {
+                    const smoke = document.createElement('div');
+                    smoke.style.cssText = `position: fixed; left: ${rect.left + rect.width/2}px; top: ${rect.top + rect.height/2}px; width: 6px; height: 6px; background: #ccc; border-radius: 50%; opacity: .8; z-index: 9999; animation: poof .4s ease-out forwards;`;
+                    if (!document.getElementById('poof-styles')) {
+                        const style = document.createElement('style');
+                        style.id = 'poof-styles';
+                        style.textContent = `@keyframes poof { to { transform: translate(${(Math.random()-0.5)*40}px, ${(Math.random()-0.5)*40}px); opacity: 0; } }`;
+                        document.head.appendChild(style);
+                    }
+                    document.body.appendChild(smoke);
+                    setTimeout(() => smoke.remove(), 400);
+                }
+            }
+
+            // Big poof for clear all
+            bigPoof() {
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => {
+                        const puff = document.createElement('div');
+                        const x = window.innerWidth/2 + (Math.random()-0.5) * 120;
+                        const y = window.innerHeight/2 + (Math.random()-0.5) * 80;
+                        const s = 6 + Math.random()*10;
+                        puff.style.cssText = `position: fixed; left: ${x}px; top: ${y}px; width: ${s}px; height: ${s}px; background: #eee; border-radius: 50%; opacity: .9; z-index: 9999; animation: bigPoof .6s ease-out forwards;`;
+                        if (!document.getElementById('bigpoof-styles')) {
+                            const style = document.createElement('style');
+                            style.id = 'bigpoof-styles';
+                            style.textContent = `@keyframes bigPoof { to { transform: translate(${(Math.random()-0.5)*160}px, ${(Math.random()-0.5)*160}px); opacity: 0; } }`;
+                            document.head.appendChild(style);
+                        }
+                        document.body.appendChild(puff);
+                        setTimeout(() => puff.remove(), 600);
+                    }, i * 12);
+                }
             }
 
             // Escape HTML to prevent XSS
